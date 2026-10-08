@@ -1,6 +1,7 @@
 {
   "name": "clean-view",
   "owner": { "name": "Bob Smith" },
+  "description": "Clean View, a calm Claude Code mod for non-technical people.",
   "plugins": [
     {
       "name": "clean-view",
