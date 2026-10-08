@@ -1,0 +1,11 @@
+{
+  "name": "clean-view",
+  "owner": { "name": "Bob Smith" },
+  "plugins": [
+    {
+      "name": "clean-view",
+      "source": "./",
+      "description": "A calm view for non-technical people: hides tool rows and shows one plain-English checklist above the prompt."
+    }
+  ]
+}

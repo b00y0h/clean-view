@@ -1,0 +1,8 @@
+{
+  "name": "clean-view",
+  "version": "0.1.0",
+  "description": "A calm view for non-technical people: hides tool rows and shows one plain-English checklist above the prompt.",
+  "author": { "name": "Bob Smith" },
+  "repository": "https://github.com/b00y0h/clean-view",
+  "types": "./types/index.d.ts"
+}
