@@ -26,6 +26,9 @@ function stubEngine(on: On, { withStore = true } = {}): void {
     mock.store(on)
   }
 
+  // Stands for what the app itself draws in the band (branch, worktree, merge status).
+  on('ui.render', () => ({ type: 'Text', props: {}, children: ['main · worktree clean-view · MR !12 open'] }))
+
   mock.clock(on, { now: 1_000_000 })
   on('session.start', (_$, e) => ({ cwd: e.cwd }))
   on('tool.register', (_$, e) => ({ value: { tool: `mcp__clean-view__${e.name}` } }))
@@ -220,4 +223,20 @@ test('6. tools are denied before a plan exists and allowed after', async ($, on)
   const after = await $.tool.call({ tool: 'Bash', command: 'ls' })
   expect(after.deny).toBeUndefined()
   expect(after.isError).toBeUndefined()
+})
+
+test("the app's own band indicators stay visible under Clean View, on and off", async ($, on) => {
+  stubEngine(on)
+  await $.turn.start({ text: 'Build my landing page', turnId: 't1' })
+
+  for (const surface of SURFACES) {
+    const ui = await mountBand($, surface)
+    expect(await ui.find({ type: 'Text', text: 'main · worktree clean-view · MR !12 open' })).toBeDefined()
+    expect(await ui.find({ type: 'Text', text: /Understand your request/ })).toBeDefined()
+    await ui.unmount()
+  }
+
+  await $.command.run({ command: 'simple', args: 'off', origin: { kind: 'composer' }, presentation: { isFullscreen: false, columns: 80 } })
+  const off = await mountBand($, 'terminal')
+  expect(await off.find({ type: 'Text', text: 'main · worktree clean-view · MR !12 open' })).toBeDefined()
 })

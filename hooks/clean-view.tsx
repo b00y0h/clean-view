@@ -1,5 +1,5 @@
 import { atom, read, update } from 'claude-code'
-import type { EngineInterface, On, Timer } from 'claude-code'
+import type { EngineInterface, On, RenderElement, Timer } from 'claude-code'
 
 import type { CleanViewChecklist, CleanViewTask } from '../types'
 
@@ -719,6 +719,10 @@ export function registerCleanView(on: On): void {
       return next(e)
     }
 
+    // What the app and later mods draw in this band: the branch, worktree and merge status
+    // indicators among them. A tree drawn here replaces theirs, so theirs always goes under ours.
+    const theirs = await next(e)
+    const ours = await (async (): Promise<RenderElement> => {
     const enabled = await read($, enabledAtom)
     const c = await read($, checklistAtom)
     const tick = await read($, tickAtom)
@@ -833,6 +837,16 @@ export function registerCleanView(on: On): void {
         {headerRow}
         {rows}
       </Box>
+    )
+    })()
+
+    const { Box: Band } = $.ui.resolve(e)
+
+    return (
+      <Band flexDirection="column">
+        {ours}
+        {theirs}
+      </Band>
     )
   })
 }
